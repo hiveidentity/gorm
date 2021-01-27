@@ -259,12 +259,14 @@ func (schema *Schema) ParseField(fieldStruct reflect.StructField) *Field {
 	}
 
 	if v, ok := field.TagSettings["AUTOUPDATETIME"]; ok || (field.Name == "UpdatedAt" && (field.DataType == Time || field.DataType == Int || field.DataType == Uint)) {
-		if strings.ToUpper(v) == "NANO" {
-			field.AutoUpdateTime = UnixNanosecond
-		} else if strings.ToUpper(v) == "MILLI" {
-			field.AutoUpdateTime = UnixMillisecond
-		} else {
-			field.AutoUpdateTime = UnixSecond
+		if _, ok := field.TagSettings["RESTRICTAUTOUPDATE"]; !ok {
+			if strings.ToUpper(v) == "NANO" {
+				field.AutoUpdateTime = UnixNanosecond
+			} else if strings.ToUpper(v) == "MILLI" {
+				field.AutoUpdateTime = UnixMillisecond
+			} else {
+				field.AutoUpdateTime = UnixSecond
+			}
 		}
 	}
 
